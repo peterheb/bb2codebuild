@@ -1,0 +1,36 @@
+service: bb2codebuild
+
+provider:
+  name: aws
+  runtime: python2.7
+  memorySize: 128   # MB is more than adequate. This script is neither CPU nor RAM-bound.
+  timeout: 10       # seconds, the absolute limit of a Bitbucket webhook call
+  stage: dev        # can customize this for your enviornment, appears in URL
+  region: us-east-1 # customize this for your environment
+
+  iamRoleStatements:
+    # Our Lambda function needs permission to start builds and get CodeBuild project settings.
+    - Effect: "Allow"
+      Action:
+       - "codebuild:StartBuild"
+       - "codebuild:BatchGetProjects"
+      Resource: 
+       - "*"
+
+package:
+  exclude:
+    - "*.md"
+    - "LICENSE"
+
+functions:
+  webhook:
+    handler: lambda_function.webhook
+    events:
+      - http: POST bb2cb_webhook
+    environment:
+      # you can customize this if you don't like the default naming convention for CodeBuild projects
+      pattern: "$username-$reponame-$branch"
+
+      # if you specify a token here, the webhook will require it on the query string 
+      # as ?token=password123. (Replacing password123 with your token, of course.)
+      token: ""
