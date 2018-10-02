@@ -1,5 +1,8 @@
 # BB2CodeBuild
 
+> As of October 2018, support for BitBucket webhooks is now built-in to AWS CodeBuild,
+> making this project obsolete. See: [AWS Announcement](https://forums.aws.amazon.com/ann.jspa?annID=6177)
+
 ## Summary
 
 This project provides an AWS Lambda function that receives webhook calls from
